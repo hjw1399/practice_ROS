@@ -40,6 +40,7 @@ int main(int argc, char **argv)
     std::stringstream ss;
     std::normal_distribution<double> distribution(mean, std_dev);
 
+    // I declared this struct to solve eliminating cumulative error.
     Pose6D distribution6D;
     distribution6D.x = distribution(generator);
     distribution6D.y = distribution(generator);
@@ -48,6 +49,7 @@ int main(int argc, char **argv)
     distribution6D.pitch = distribution(generator);
     distribution6D.yaw = distribution(generator);
 
+    // to simulate sensor noise
     pose6D.x += distribution6D.x;
     pose6D.y += distribution6D.y;
     pose6D.z += distribution6D.z;
@@ -55,10 +57,11 @@ int main(int argc, char **argv)
     pose6D.pitch += distribution6D.pitch;
     pose6D.yaw += distribution6D.yaw;
 
+//  3 seconds after the node is turned on, we will go to 30 units.
     if(ros::Time::now().toSec() - init_time >= 3.0)
     {
       double x_ref = 30;
-
+      
       double Kp = 3;
       double Ki = 0.01;
       double Kd = 0.1;
@@ -87,6 +90,7 @@ int main(int argc, char **argv)
 
     pub_sensor_raw_data.publish(msg);
 
+    // to eliminate cumulative error.
     pose6D.x -= distribution6D.x;
     pose6D.y -= distribution6D.y;
     pose6D.z -= distribution6D.z;
