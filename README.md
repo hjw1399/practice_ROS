@@ -6,5 +6,6 @@ We may use the sensor to estimate vehicle's pose.
 so, I made it as if I'm receiving an IMU sensor data by adding Gaussian distribution noise.
 and I also wrote the PID position control by accelerating.
 
-Try Making this std_msgs data to geometry_msgs, or sensor_msgs/Imu by using ros publisher and subscriber,
+Subscribe to this virtual Imu data(std_msgs/String) and try publishing it using Sensor_msgs/Imu by using the ros publisher and subscriber.
+And Try publishing by using geometry_msgs, tf.
 and visualize the 6D pose on the rviz.
