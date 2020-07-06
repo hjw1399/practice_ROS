@@ -1,5 +1,6 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/Float64.h"
 
 #include <sstream>
 #include <random>
@@ -24,6 +25,7 @@ int main(int argc, char **argv)
   ros::Time::init();
   ros::NodeHandle n;
   ros::Publisher pub_sensor_raw_data = n.advertise<std_msgs::String>("vehicle_6d_pose", 1000);
+  ros::Publisher pub_x = n.advertise<std_msgs::Float64>("x_position", 1000);
   ros::Rate loop_rate(100);
 
   std::default_random_engine generator;
@@ -31,6 +33,7 @@ int main(int argc, char **argv)
   double past_time = ros::Time::now().toSec();
   double past_error(0);
   double integral_error(0);
+  double x_velocity(0);
   bool isFirstError = true;
 
   Pose6D pose6D = {0};
@@ -61,7 +64,7 @@ int main(int argc, char **argv)
     if(ros::Time::now().toSec() - init_time >= 3.0)
     {
       double x_ref = 30;
-      
+
       double Kp = 3;
       double Ki = 0.01;
       double Kd = 0.1;
@@ -78,7 +81,8 @@ int main(int argc, char **argv)
       }
 
       past_error = error;
-      double x_velocity = Kp * error + Ki * integral_error + Kd * dedt;
+      double x_acceleration = Kp * error + Ki * integral_error + Kd * dedt;
+      x_velocity += x_acceleration * dt;
       pose6D.x += x_velocity * dt;
     }
 
@@ -87,8 +91,11 @@ int main(int argc, char **argv)
     msg.data = ss.str();
 
     ROS_INFO("%s", msg.data.c_str());
+    std_msgs::Float64 x_position;
+    x_position.data = pose6D.x;
 
     pub_sensor_raw_data.publish(msg);
+    pub_x.publish(x_position);
 
     // to eliminate cumulative error.
     pose6D.x -= distribution6D.x;
