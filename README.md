@@ -11,5 +11,5 @@ And Try publishing by using geometry_msgs, tf.
 and visualize the 6D pose on the rviz.
 
 ```bash
-$ rosrun practice_ROS publish_6d_pose
+$ rosrun practice_ros publish_6d_pose
 ```
