@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>publish_6d_pose</name>
-  <version>1.0.1</version>
+  <name>practice_ros</name>
+  <version>1.0.2</version>
   <description>The publish_6d_pose package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
